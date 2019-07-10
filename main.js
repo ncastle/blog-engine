@@ -2,6 +2,8 @@
  * Blog Engine exercise demonstrating use of promises
  */
 
+
+
 /*** functions for index.html page ***/
 
 // this function starts fetches all posts
@@ -50,37 +52,29 @@ function addAllPosts(allPromises) {
 
 // add post handles displaying a post to the page
 function addPost(thePost) {
-  const element = document.getElementById("container"); // select container div
+  const container = document.getElementById("container"); // select container div
   const title = document.createElement("h2");   // create title elem
   const titleLink = document.createElement('a');
-  // const body = document.createElement("p");
   const author = document.createElement("h3");
-  // const email = document.createElement('a');
-  // const phone = document.createElement('a');
+  const authorLink = document.createElement('a');
 
   // we need the author so call get author function
   // which returns a promise containing the authors info
   //based on the userId on the current post
   getAuthor(thePost.userId).then(authorData => {
-    titleLink.textContent = `Title: ${thePost.title}`;
-    titleLink.href = `posts.html?postId=${thePost.id}`;
-    // body.textContent = `Body: ${thePost.body}`;
-    author.textContent = `Author: ${authorData.name}`;
-    // email.textContent = `Email: ${authorData.email}`
-    // email.href = 'mailto:' + authorData.email;
+    title.textContent = `Title: `;
+    titleLink.textContent = `${thePost.title}`;
+    titleLink.href = `post.html?postId=${thePost.id}`;
+    author.textContent = `Author: `;
+    authorLink.textContent = `${authorData.name}`;
+    authorLink.href = `author.html?userId=${thePost.userId}`;
 
-    // phone.textContent = `Phone: ${authorData.phone}`
-    // phone.href = 'tel:' + authorData.phone;
-
+    // append elements
     title.appendChild(titleLink);
-    element.appendChild(title);
-    // element.appendChild(body);
-    element.appendChild(author);
-    // element.appendChild(email);
-    element.appendChild(document.createElement('hr'));
-    // element.appendChild(phone);
-
-    // set event listener for title click
+    author.appendChild(authorLink);
+    container.appendChild(title);
+    container.appendChild(author);
+    container.appendChild(document.createElement('hr'));
 
   });
 }
@@ -92,7 +86,8 @@ function getAuthor(authorId) {
 }
 
 
-/*** functions for posts.html page ***/
+
+/*** functions for post.html page ***/
 
 function getPost(postId) {
   // fetch post with postId & return promise
@@ -103,14 +98,17 @@ function getPost(postId) {
       return postResponse.json(); // convert response to json
     }).then((postJSON) => {
       console.log({postJSON});
-      addSpecificPost(postJSON);
+      addSpecificPost(postJSON);  // add the post to page
     });
 }
 
+// handles appending a post to the post.html page
 function addSpecificPost(thePost) {
   console.log('were adding a post');
   console.log(thePost)
 
+  // get container element, and create elements for
+  // required parts of post.html page
   const element = document.getElementById('container');
   const postTitle = document.createElement('h1');
   const postBody = document.createElement('p');
@@ -119,13 +117,17 @@ function addSpecificPost(thePost) {
   const commentLink = document.createElement('a');
   commentLink.id = "commentLink";
   
+  //set content and link
   postTitle.textContent = `${thePost.title}`;
   postBody.textContent = `${thePost.body}`;
   commentLink.textContent = 'Show Comments';
-  commentLink.href = '#';
+  commentLink.href = '#';   // set href to create link
+  // add event listener to link
   commentLink.addEventListener('click', () => {
+    // gets a promise of the collection of comments
     getComments(thePost.id).then((commentList) => {
       console.log({commentList});
+      // add comments to the page
       addComments(commentList);
     })
   });
@@ -181,9 +183,10 @@ function addComments(comments) {
 
   // remove show comments link
   container.removeChild(document.getElementById('commentLink'));
-  
 }
 
+
+/*** functions for author.html page ***/
 
 
 
@@ -198,11 +201,14 @@ if (fileName.includes("index.html")) {
   console.log('We are at index, getAllPosts()');
   getAllPosts();
 }
-if(fileName.includes("posts.html")) {
+if(fileName.includes("post.html")) {
   // get the postId
-  console.log('We are in posts.html, getting postId');
+  console.log('We are in post.html, getting postId');
   let thePostId = window.location.href.split("postId=").slice(-1)[0];
   getPost(thePostId); 
+}
+if(fileName.includes("author.html")) {
+  console.log('We are in author.html!! need the author');
 }
 
 
