@@ -208,7 +208,47 @@ function showAuthorInfo(userId) {
   })
 }
 
+/*** functions for about-posts.html page ***/
 
+// handles fetching and displaying an author's blog posts
+function showAuthorPosts(userId) {
+  console.log(`showing posts for user ${userId}`);
+
+  // fetch the promise containing all of an author's posts
+  fetch(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`)
+  .then((postResponse) => {
+    return postResponse.json();
+  }).then((posts) => {
+    console.log({posts});
+    addAuthorPosts(posts);  // add posts to document
+  });
+  
+  function addAuthorPosts(thePosts) {
+    console.log('adding author posts');
+    const container = document.getElementById('container');
+    const header = document.getElementById('header');
+    const postsTitle = document.createElement('h2');
+    postsTitle.textContent = `Posts:`;
+    container.appendChild(postsTitle);
+
+    // get author name for header
+    getAuthor(userId).then((data) => {
+      header.textContent = `Blog Posts for ${data.name}`;
+    });
+    
+    // for each post set textContent and append to document
+    thePosts.forEach((post) => {
+      const title = document.createElement('h3');
+      const body = document.createElement('p');
+      title.textContent = post.title;
+      body.textContent = post.body;
+
+      container.append(title, body);
+      container.appendChild(document.createElement('hr'));
+    });
+  }
+}
+  
 // driver code
 
 // get URL of page
@@ -230,6 +270,11 @@ if(fileName.includes("author.html")) {
   console.log('We are in author.html!! need the author');
   let theUserId = window.location.href.split("userId=").slice(-1)[0];
   showAuthorInfo(theUserId);
+}
+if(fileName.includes("author-posts.html")) {
+  let theUserId = window.location.href.split("userId=").slice(-1)[0];
+  console.log('We are in author-posts.html, need to fetch posts');
+  showAuthorPosts(theUserId);
 }
 
 
