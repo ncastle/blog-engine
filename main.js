@@ -188,6 +188,22 @@ function addComments(comments) {
 
 /*** functions for author.html page ***/
 
+function showAuthorInfo(userId) {
+  console.log(`showing author info for user ${userId}`);
+  const container = document.getElementById('container');
+  const authorName = document.createElement('h1');
+  const authorEmail = document.createElement('h3');
+  const authorAddress = document.createElement('h3');
+
+  getAuthor(userId).then((authorInfo) => {
+    console.log({authorInfo});
+    authorName.textContent = `Author: ${authorInfo.name}`;
+    authorEmail.textContent = `Email: ${authorInfo.email}`;
+    authorAddress.textContent = `Address: ${JSON.stringify(authorInfo.address)}`;
+
+    container.append(authorName, authorEmail, authorAddress);
+  })
+}
 
 
 // driver code
@@ -209,6 +225,8 @@ if(fileName.includes("post.html")) {
 }
 if(fileName.includes("author.html")) {
   console.log('We are in author.html!! need the author');
+  let theUserId = window.location.href.split("userId=").slice(-1)[0];
+  showAuthorInfo(theUserId);
 }
 
 
