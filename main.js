@@ -194,6 +194,9 @@ function showAuthorInfo(userId) {
   const authorName = document.createElement('h1');
   const authorEmail = document.createElement('h3');
   const authorAddress = document.createElement('h3');
+  const blogPostsLink = document.createElement('a');
+  blogPostsLink.textContent = `See blog posts by this author`;
+  blogPostsLink.href = `author-posts.html?userId=${userId}`;
 
   getAuthor(userId).then((authorInfo) => {
     console.log({authorInfo});
@@ -201,7 +204,7 @@ function showAuthorInfo(userId) {
     authorEmail.textContent = `Email: ${authorInfo.email}`;
     authorAddress.textContent = `Address: ${JSON.stringify(authorInfo.address)}`;
 
-    container.append(authorName, authorEmail, authorAddress);
+    container.append(authorName, authorEmail, authorAddress, blogPostsLink);
   })
 }
 
