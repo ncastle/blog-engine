@@ -117,10 +117,18 @@ function addSpecificPost(thePost) {
   const authorName = document.createElement('h2');
   const authorEmail = document.createElement('h3');
   const commentLink = document.createElement('a');
+  commentLink.id = "commentLink";
   
   postTitle.textContent = `${thePost.title}`;
   postBody.textContent = `${thePost.body}`;
-  
+  commentLink.textContent = 'Show Comments';
+  commentLink.href = '#';
+  commentLink.addEventListener('click', () => {
+    getComments(thePost.id).then((commentList) => {
+      console.log({commentList});
+      addComments(commentList);
+    })
+  });
 
   // need the author info, call getAuthor from above
   getAuthor(thePost.userId).then((data) => {
@@ -133,6 +141,49 @@ function addSpecificPost(thePost) {
     element.append(postTitle, authorName, postBody, authorEmail, commentLink);
   })
 }
+
+// function takes a postId and fetches the comments
+// and returns a Promise containing a collection of
+// comments in json
+function getComments(postId) {
+  console.log(`We are getting comments for post ${postId}`);
+
+  // fetch the comments for the specific post
+  return fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
+  .then((commentResponse) => {
+    return commentResponse.json();
+  })
+}
+
+// this function takes a collection of comments as json
+// and adds each comment to 
+function addComments(comments) {
+  console.log({addComments:comments})
+   // get container div
+  const container = document.getElementById('container');
+  // create h1 element, set the textContent, and append to page
+  const commentHeader = document.createElement('h1');
+  commentHeader.textContent = "Comments:";
+  container.appendChild(commentHeader);
+
+  // for each comment, create elements for components of comment,
+  // then assign the textContent for each element, and append all
+  comments.forEach((comment) => {
+    const commentName = document.createElement('h2');
+    const commentBody = document.createElement('p');
+    const commentEmail = document.createElement('h4');
+    commentName.textContent = `name: ${comment.name}`;
+    commentBody.textContent = `body: ${comment.body}`;
+    commentEmail.textContent = `email: ${comment.email}`;
+    container.append(commentName, commentBody, commentEmail);
+    container.appendChild(document.createElement('hr'));
+  })
+
+  // remove show comments link
+  container.removeChild(document.getElementById('commentLink'));
+  
+}
+
 
 
 
