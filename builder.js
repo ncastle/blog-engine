@@ -1,13 +1,8 @@
 // export
-export {addAllPosts, addPost, addSpecificPost, addComments, showAuthorInfo, showAuthorPosts}
+export {addPost, addSpecificPost, addComments, showAuthorInfo, showAuthorPosts}
 
 import {getAuthor} from '/client.js'
 // index.html
-
-// this func takes an array of promises
-function addAllPosts(allPromises) {
-  
-}
 
 // add post handles displaying a post to the page
 function addPost(thePost) {
@@ -33,8 +28,6 @@ function addPost(thePost) {
   container.appendChild(title);
   container.appendChild(author);
   container.appendChild(document.createElement('hr'));
-
-    
 
 }
 
